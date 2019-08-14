@@ -1,0 +1,19 @@
+{
+  "name": "d3-map-connections",
+  "version": "1.0.0",
+  "description": "Draw connections on a D3.js map. Use source and destination coordinates to make a connection.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Peeyush Pant",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.2"
+  },
+  "dependencies": {
+    "webpack-cli": "^3.3.6"
+  }
+}
