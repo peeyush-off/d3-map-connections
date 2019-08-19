@@ -1,43 +1,43 @@
-import optionsMap from './options.js';
+import optionsMap from './options';
 
 function create() {
-    let container = optionsMap.parentId;
+    const container = optionsMap.options.parentId;
 
-    let w = $(container).width();
-    let h = $(container).height();
+    const w = $(container).width();
+    const h = $(container).height();
 
     // variables for catching min and max zoom factors
     let minZoom;
     let maxZoom;
 
     // Define map projection
-    let projection = d3
+    const projection = d3
         .geoEquirectangular()
         .center([0, 0])
         .scale([w / (2 * Math.PI)]) // scale to fit group width
         .translate([w / 2, h / 2]); // ensure centred in group
 
-    let div = d3
+    const div = d3
         .select('body')
         .append('div')
         .attr('class', 'tooltip')
         .style('opacity', 0);
 
     // Define map path
-    let path = d3.geoPath().projection(projection);
+    const path = d3.geoPath().projection(projection);
 
     // Create function to apply zoom to countriesGroup
     function zoomed() {
-        let t = d3.event.transform;
+        const t = d3.event.transform;
         // eslint-disable-next-line no-use-before-define
         countriesGroup.attr(
             'transform',
-            'translate(' + [t.x, t.y] + ')scale(' + t.k + ')'
+            `translate(${[t.x, t.y]})scale(${t.k})`,
         );
     }
 
     // Create an SVG
-    let svg = d3
+    const svg = d3
         .select('#map-holder')
         .append('svg')
         // set to the same size as the "map-holder" div
@@ -51,7 +51,7 @@ function create() {
     // let imageGroupSource = countriesGroup.append('g');
 
     // Define map zoom behaviour
-    let zoom = d3.zoom().on('zoom', zoomed);
+    const zoom = d3.zoom().on('zoom', zoomed);
 
     // Function that calculates zoom/pan limits and sets zoom to default value
     function initiateZoom() {
@@ -59,45 +59,37 @@ function create() {
         // small possible without leaving white space at top/bottom or sides
         minZoom = Math.max(
             $('#map-holder').width() / w,
-            $('#map-holder').height() / h
+            $('#map-holder').height() / h,
         );
         // set max zoom to a suitable factor of this value
         maxZoom = 20 * minZoom;
         // set extent of zoom to chosen values
         // set translate extent so that panning can't cause map to move out of viewport
-        zoom.scaleExtent([minZoom, maxZoom]).translateExtent([
-            [0, 0],
-            [w, h]
-        ]);
+        zoom.scaleExtent([minZoom, maxZoom]).translateExtent([[0, 0], [w, h]]);
         // define X and Y offset for centre of map to be shown in centre of holder
-        let midX = ($('#map-holder').width() - minZoom * w) / 2;
-        let midY = ($('#map-holder').height() - minZoom * h) / 2;
+        const midX = ($('#map-holder').width() - minZoom * w) / 2;
+        const midY = ($('#map-holder').height() - minZoom * h) / 2;
         // change zoom transform to min zoom and centre offsets
         svg.call(
             zoom.transform,
-            d3.zoomIdentity.translate(midX, midY).scale(minZoom)
+            d3.zoomIdentity.translate(midX, midY).scale(minZoom),
         );
     }
 
     // On window resize
     // eslint-disable-next-line func-names
-    $(window).resize(function() {
+    $(window).resize(() => {
         // Resize SVG
-        svg
-            .attr('width', $('#map-holder').width())
-            .attr('height', $('#map-holder').height());
+        svg.attr('width', $('#map-holder').width()).attr(
+            'height',
+            $('#map-holder').height(),
+        );
         initiateZoom();
     });
 
     function init() {
-        setTimeout(function() {
-            d3.json('geo.json', function(error, data) {
-                if (error) {
-                    console.error('Error reading geo.json');
-                } else {
-                    createMap(data);
-                }
-            });
+        setTimeout(() => {
+            createMap(optionsMap.options.geoJson);
         }, 100);
     }
 
@@ -121,42 +113,37 @@ function create() {
             .enter()
             .append('path')
             .attr('d', path)
-            .attr('id', function(d) {
-                return 'country' + d.properties.iso_a3;
-            })
+            .attr('id', d => `country${d.properties.iso_a3}`)
             .attr('class', 'country')
 
-        .on('mouseover', function(d) {
-                d3.select('#countryLabel' + d.properties.iso_a3).style(
+            .on('mouseover', (d) => {
+                d3.select(`#countryLabel${d.properties.iso_a3}`).style(
                     'display',
-                    'block'
+                    'block',
                 );
             })
-            .on('mouseout', function(d) {
-                d3.select('#countryLabel' + d.properties.iso_a3).style(
+            .on('mouseout', (d) => {
+                d3.select(`#countryLabel${d.properties.iso_a3}`).style(
                     'display',
-                    'none'
+                    'none',
                 );
             });
 
-        let countryLabels = countriesGroup
+        const countryLabels = countriesGroup
             .selectAll('g')
             .data(json.features)
             .enter()
             .append('g')
             .attr('class', 'countryLabel')
-            .attr('id', function(d) {
-                return 'countryLabel' + d.properties.iso_a3;
-            })
-            .attr('transform', function(d) {
-                return (
-                    'translate(' + path.centroid(d)[0] + ',' + path.centroid(d)[1] + ')'
-                );
-            })
-            .on('mouseover', function() {
+            .attr('id', d => `countryLabel${d.properties.iso_a3}`)
+            .attr(
+                'transform',
+                d => `translate(${path.centroid(d)[0]},${path.centroid(d)[1]})`,
+            )
+            .on('mouseover', function () {
                 d3.select(this).style('display', 'block');
             })
-            .on('mouseout', function() {
+            .on('mouseout', function () {
                 d3.select(this).style('display', 'none');
             });
 
@@ -166,15 +153,10 @@ function create() {
             .style('text-anchor', 'middle')
             .attr('dx', 0)
             .attr('dy', 0)
-            .text(function(d) {
-                return d.properties.name;
-            });
+            .text(d => d.properties.name);
 
         initiateZoom();
     }
 }
 
-
-export {
-    create
-};
+export default { create };

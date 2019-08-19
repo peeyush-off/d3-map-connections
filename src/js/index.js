@@ -1,5 +1,5 @@
-import optionsMap from './options.js';
-import map from './map.js';
+import optionsMap from "./options";
+import map from "./map";
 // import connections from './connections.js';
 // import feedData from './feedData.js';
 
@@ -7,22 +7,18 @@ import map from './map.js';
 const d3MapConn = (function exportFunction() {
     const EXPORTOBJECT = {};
 
-    const options = {
-        showPulsatingDestinationCircles: true,
-        parentId: '#map-holder'
-    };
-    optionsMap.set(options);
-
     EXPORTOBJECT.setOptions = function setOptions(optionsObject) {
         // eslint-disable-next-line no-restricted-syntax
         for (const [key, value] of Object.entries(optionsObject)) {
-            if (key in options) {
-                options[key] = value;
+            if (key in optionsMap.options) {
+                optionsMap.options[key] = value;
             } else {
-                throw new Error(`No configuration option named ${key} available`);
+                throw new Error(
+                    `No configuration option named ${key} available`
+                );
             }
         }
-        optionsMap.set(options);
+        // optionsMap.set(options);
     };
 
     EXPORTOBJECT.createMap = function createMap() {
@@ -39,6 +35,6 @@ const d3MapConn = (function exportFunction() {
 
     // Expose the public EXPORTOBJECT
     return EXPORTOBJECT;
-}());
+})();
 
-export default d3MapConn;
+window.d3MapConn = d3MapConn;

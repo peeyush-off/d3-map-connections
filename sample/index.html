@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Netconnections Map</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <link rel="stylesheet" href="d3-map-connections.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.7/d3.min.js"></script>
+        <script src="../dist/main.js"></script>
+        <script>
+            console.log(d3MapConn);
+            console.log($.getJSON);
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Netconnections Map</title>
-    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-    <link rel="stylesheet" href="d3-map-connections.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.7/d3.min.js"></script>
-    <script src="main.js"></script>
-    <script>
-    </script>
-</head>
+            $.getJSON("data/geo.json", function(json) {
+                console.log(json);
+                d3MapConn.setOptions({ geoJson: json });
+                d3MapConn.createMap();
+            });
+        </script>
+    </head>
 
-<body>
-    <div id="map-holder"></div>
-</body>
-
+    <body>
+        <div id="map-holder"></div>
+    </body>
 </html>
