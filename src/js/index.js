@@ -1,5 +1,7 @@
 import optionsMap from "./options";
 import map from "./map";
+import connections from "./connections";
+
 // import connections from './connections.js';
 // import feedData from './feedData.js';
 
@@ -26,11 +28,7 @@ const d3MapConn = (function exportFunction() {
     };
 
     EXPORTOBJECT.createConnections = function createConnections() {
-        createConnections();
-    };
-
-    EXPORTOBJECT.feedData = function feedData() {
-        feedData();
+        connections.createConnections();
     };
 
     // Expose the public EXPORTOBJECT

@@ -1,14 +1,11 @@
-let options = {
+const options = {
     showPulsatingDestinationCircles: true,
-    parentId: '#map-holder',
+    parentId: "#map-holder",
     geoJson: null,
+    sourcePointer: 'img/source.png',
+    destinationPointer: 'img/destination.png',
 };
 
-function set(optionsObj) {
-    options = optionsObj;
-}
-
 export default {
-    set,
-    options,
+    options
 };
