@@ -9,8 +9,8 @@ body {
 #map-holder {
     width: 80vw;
     height: 80vh;
-    margin-left: 200px;
-    margin-top: 80px;
+    margin-left: 5%;
+    margin-top: 5%;
 }
 
 svg rect {
@@ -39,6 +39,7 @@ svg rect {
 .countryName {
     fill: #000000;
     /* country label text colour */
+    stroke-width: 2;
 }
 
 .countryLabelBg {

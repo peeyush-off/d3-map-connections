@@ -24,11 +24,11 @@ const d3MapConn = (function exportFunction() {
     };
 
     EXPORTOBJECT.createMap = function createMap() {
-        map.create();
+        return map.create();
     };
 
-    EXPORTOBJECT.createConnections = function createConnections() {
-        connections.createConnections();
+    EXPORTOBJECT.createConnections = function createConnections(data) {
+        connections.createConnections(data);
     };
 
     // Expose the public EXPORTOBJECT
