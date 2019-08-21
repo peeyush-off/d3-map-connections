@@ -1,33 +1,47 @@
+/* eslint-disable no-plusplus */
 import optionStore from './options';
 
+let arcGroup;
+let imageGroupDestination;
+let highlightCircle;
+let imageGroupSource;
+let destination;
+let source;
+let sourceMatchMap;
+let destinationMatchMap;
+const alreadyHighlighted = {};
+let iterationCount = 0;
 /**
  * This function will be used to draw elemets like
  * path, pointers and pulsating circles on map.
  * @param {array} data The data that will used to create elements.
  */
 function createConnections(data) {
+    iterationCount++;
     const {
         div,
         projection,
         countriesGroup,
     } = optionStore.internalStore;
 
-    const arcGroup = countriesGroup.append('g');
-    const imageGroupDestination = countriesGroup.append('g');
-    const highlightCircle = countriesGroup.append('g');
-    const imageGroupSource = countriesGroup.append('g');
+    // if (!arcGroup) {
+    arcGroup = countriesGroup.append('g');
+    imageGroupDestination = countriesGroup.append('g');
+    highlightCircle = countriesGroup.append('g');
+    imageGroupSource = countriesGroup.append('g');
 
     // Array that will be used  to draw destination pointer
-    const destination = [];
+    destination = [];
 
     // Array that will be used  to draw source pointer
-    const source = [];
+    source = [];
 
     // Map to check if a source already exists
-    const sourceMatchMap = new Map();
+    sourceMatchMap = new Map();
 
     // Map to check if a destination already exists
-    const destinationMatchMap = new Map();
+    destinationMatchMap = new Map();
+    // }
 
     data.map((val) => {
         // Update source and destination array according to data
@@ -44,6 +58,7 @@ function createConnections(data) {
                 true,
             );
         }
+        return null;
     });
 
     // Add source pointers on the map
@@ -70,7 +85,7 @@ function createConnections(data) {
                 .style('left', `${d3.event.pageX}px`)
                 .style('top', `${d3.event.pageY - 28}px`);
         })
-        .on('mouseout', function (d, i) {
+        .on('mouseout', function () {
             d3.select(this).style('cursor', 'default');
             div.transition()
                 .duration(500)
@@ -92,7 +107,7 @@ function createConnections(data) {
         .attr('height', optionStore.options.destinationImageHeight)
         .attr('x', d => projection([d.lon, d.lat])[0] - 7)
         .attr('y', d => projection([d.lon, d.lat])[1] - 15)
-        .on('mouseover', function (d, i) {
+        .on('mouseover', function (d) {
             d3.select(this).style('cursor', 'pointer');
             div.transition().style('opacity', 0.9);
             div.html(
@@ -105,7 +120,7 @@ function createConnections(data) {
                 .style('left', `${d3.event.pageX}px`)
                 .style('top', `${d3.event.pageY - 28}px`);
         })
-        .on('mouseout', function (d, i) {
+        .on('mouseout', function () {
             d3.select(this).style('cursor', 'default');
             div.transition()
                 .duration(500)
@@ -130,7 +145,7 @@ function createConnections(data) {
         .enter()
         .append('path')
         .attr('class', 'line')
-        .attr('id', (d, i) => `line${i}`)
+        .attr('id', (d, i) => `line${iterationCount}-${i}`)
         .datum(d => [d.source, d.destination])
         .attr('d', line)
         .style('fill', 'none')
@@ -170,10 +185,10 @@ function createConnections(data) {
         // Add animation to all paths drawn on map
         d3.selectAll('.line').each((d, i) => {
             const totalLength = d3
-                .select(`#line${i}`)
+                .select(`#line${iterationCount}-${i}`)
                 .node()
                 .getTotalLength();
-            d3.selectAll(`#line${i}`)
+            d3.selectAll(`#line${iterationCount}-${i}`)
                 .attr('stroke-dasharray', `${totalLength} ${totalLength}`)
                 .attr('stroke-dashoffset', totalLength)
                 .transition()
@@ -183,123 +198,81 @@ function createConnections(data) {
                 .style('stroke-width', 3);
         });
     }
-    const alreadyHighlighted = {};
 
-    if(optionStore.options.showPulsatingDestinationCircles) {
+    if (optionStore.options.showPulsatingDestinationCircles) {
         // Destination pulstaing circles
         const circles = highlightCircle
-        .selectAll('highlightCircles')
-        .data(data)
-        .enter()
-        .append('circle')
-        .attr('cx', (d) => {
-            if (
-                alreadyHighlighted[`${d.destination.lon}${d.destination.lat}`]
-            ) {
-                alreadyHighlighted[
-                    `${d.destination.lon}${d.destination.lat}`
-                ].count += d.count;
-                alreadyHighlighted[`${d.destination.lon}${d.destination.lat}`]
-                    .connections++;
-            } else {
-                alreadyHighlighted[
-                    `${d.destination.lon}${d.destination.lat}`
-                ] = {};
-                alreadyHighlighted[
-                    `${d.destination.lon}${d.destination.lat}`
-                ].count = d.count;
-                alreadyHighlighted[
-                    `${d.destination.lon}${d.destination.lat}`
-                ].connections = 1;
-            }
-            return projection([d.destination.lon, d.destination.lat])[0];
-        })
-        .attr('cy', d => projection([d.destination.lon, d.destination.lat])[1])
-        .attr('r', (d) => {
-            if (
-                alreadyHighlighted[`${d.destination.lon}${d.destination.lat}`]
-                    .count < 10
-            ) {
-                return 5;
-            }
-            if (
-                alreadyHighlighted[`${d.destination.lon}${d.destination.lat}`]
-                    .count < 50
-            ) {
-                return 7;
-            }
-            return 10;
-        })
-        .attr('fill', optionStore.options.pulsatingDestinationCirclesColor)
-        .attr('fill-opacity', 0.5)
-        .on('mouseover', function (d, i) {
-            d3.select(this).style('cursor', 'pointer');
-            div.transition().style('opacity', 0.9);
-            div.html(
-                `
+            .selectAll('highlightCircles')
+            .data(data)
+            .enter()
+            .append('circle')
+            .attr('cx', (d) => {
+                if (
+                    alreadyHighlighted[`${d.destination.lon}${d.destination.lat}`]
+                ) {
+                    alreadyHighlighted[
+                        `${d.destination.lon}${d.destination.lat}`
+                    ].count += d.count;
+                    alreadyHighlighted[`${d.destination.lon}${d.destination.lat}`]
+                        .connections++;
+                } else {
+                    alreadyHighlighted[
+                        `${d.destination.lon}${d.destination.lat}`
+                    ] = {};
+                    alreadyHighlighted[
+                        `${d.destination.lon}${d.destination.lat}`
+                    ].count = d.count;
+                    alreadyHighlighted[
+                        `${d.destination.lon}${d.destination.lat}`
+                    ].connections = 1;
+                }
+                return projection([d.destination.lon, d.destination.lat])[0];
+            })
+            .attr('cy', d => projection([d.destination.lon, d.destination.lat])[1])
+            .attr('r', (d) => {
+                if (
+                    alreadyHighlighted[`${d.destination.lon}${d.destination.lat}`]
+                        .count < 10
+                ) {
+                    return 5;
+                }
+                if (
+                    alreadyHighlighted[`${d.destination.lon}${d.destination.lat}`]
+                        .count < 50
+                ) {
+                    return 7;
+                }
+                return 10;
+            })
+            .attr('fill', optionStore.options.pulsatingDestinationCirclesColor)
+            .attr('fill-opacity', 0.5)
+            .on('mouseover', function (d, i) {
+                d3.select(this).style('cursor', 'pointer');
+                div.transition().style('opacity', 0.9);
+                div.html(
+                    `
             <div style = "background-color: black; color: white; padding: 10px;">${
-                d.destination[optionStore.options.destinationTooltipdata]
-                }</div>
+                    d.destination[optionStore.options.destinationTooltipdata]
+                    }</div>
             `,
-            )
-                .style('left', `${d3.event.pageX}px`)
-                .style('top', `${d3.event.pageY - 28}px`);
-        })
-        .on('mouseout', function (d, i) {
-            d3.select(this).style('cursor', 'default');
-            div.transition()
-                .duration(500)
-                .style('opacity', 0);
-        })
-        .attr('fill-opacity', 0)
-        .transition()
-        .attr('fill-opacity', 0.5)
-        .delay(optionStore.options.animationDuration);
+                )
+                    .style('left', `${d3.event.pageX}px`)
+                    .style('top', `${d3.event.pageY - 28}px`);
+            })
+            .on('mouseout', function (d, i) {
+                d3.select(this).style('cursor', 'default');
+                div.transition()
+                    .duration(500)
+                    .style('opacity', 0);
+            })
+            .attr('fill-opacity', 0)
+            .transition()
+            .attr('fill-opacity', 0.5)
+            .delay(optionStore.options.animationDuration);
 
         setTimeout(() => {
             circles.each(pulsate);
         }, 5500);
-    }
-
-    /**
-     * This function defines the curve that will be used in creating the paths on the map.
-     */
-    function curve(context) {
-        const custom = d3.curveLinear(context);
-        custom._context = context;
-        custom.point = function (x, y) {
-            (x = +x), (y = +y);
-            switch (this._point) {
-                case 0:
-                    this._point = 1;
-                    this._line
-                        ? this._context.lineTo(x, y)
-                        : this._context.moveTo(x, y);
-                    this.x0 = x;
-                    this.y0 = y;
-                    break;
-                case 1:
-                    this._point = 2;
-                    break;
-                default:
-                    let x1 = this.x0 * 0.5 + x * 0.5;
-                    let y1 = this.y0 * 0.5 + y * 0.5;
-                    const m = 1 / (y1 - y) / (x1 - x);
-                    const r = -100; // offset of mid point.
-                    const k = r / Math.sqrt(1 + m * m);
-                    if (m == Infinity) {
-                        y1 += r;
-                    } else {
-                        y1 += k;
-                        x1 += m * k;
-                    }
-                    this._context.quadraticCurveTo(x1, y1, x, y);
-                    this.x0 = x;
-                    this.y0 = y;
-                    break;
-            }
-        };
-        return custom;
     }
 
     /**
@@ -340,6 +313,44 @@ function createConnections(data) {
             })
             .attr('stroke-width', 10)
             .on('end', pulsate);
+    }
+
+    /**
+ * This function defines the curve that will be used in creating the paths on the map.
+ */
+    function curve(context) {
+        let custom = d3.curveLinear(context);
+        custom._context = context;
+        custom.point = function (x, y) {
+            (x = +x), (y = +y);
+            switch (this._point) {
+                case 0:
+                    this._point = 1;
+                    this._line ? this._context.lineTo(x, y) : this._context.moveTo(x, y);
+                    this.x0 = x;
+                    this.y0 = y;
+                    break;
+                case 1:
+                    this._point = 2;
+                default:
+                    let x1 = this.x0 * 0.5 + x * 0.5;
+                    let y1 = this.y0 * 0.5 + y * 0.5;
+                    let m = 1 / (y1 - y) / (x1 - x);
+                    let r = -100; // offset of mid point.
+                    let k = r / Math.sqrt(1 + m * m);
+                    if (m == Infinity) {
+                        y1 += r;
+                    } else {
+                        y1 += k;
+                        x1 += m * k;
+                    }
+                    this._context.quadraticCurveTo(x1, y1, x, y);
+                    this.x0 = x;
+                    this.y0 = y;
+                    break;
+            }
+        };
+        return custom;
     }
 }
 

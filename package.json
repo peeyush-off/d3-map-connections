@@ -4,7 +4,8 @@
     "description": "Draw connections on a D3.js map. Use source and destination coordinates to make a connections.",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "npx webpack --config webpack.config.js"
     },
     "author": "Peeyush Pant",
     "license": "ISC",
