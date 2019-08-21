@@ -1,12 +1,14 @@
+console.log(__dirname);
+
 const options = {
     showPulsatingDestinationCircles: true,
     parentId: '#map-holder',
     geoJson: null,
-    sourceImage: 'img/source-pin.png',
+    sourceImage: __dirname + 'img/source-pin.png',
     sourceImageHeight: 20,
     sourceImageWidth: 20,
     sourceTooltipdata: 'ip',
-    destinationImage: 'img/pointer.png',
+    destinationImage: __dirname + 'img/pointer.png',
     destinationImageWidth: 15,
     destinationImageHeight: 15,
     destinationTooltipdata: 'ip',

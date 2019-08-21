@@ -10,6 +10,7 @@
     "author": "Peeyush Pant",
     "license": "ISC",
     "devDependencies": {
+        "copy-webpack-plugin": "^5.0.4",
         "eslint": "^5.3.0",
         "eslint-config-airbnb-base": "^13.2.0",
         "eslint-plugin-import": "^2.18.2",

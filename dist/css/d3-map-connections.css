@@ -1,30 +1,16 @@
 body {
     margin: 0;
-    background-color: #2A2C39;
-    font-family: 'Yanone Kaffeesatz', sans-serif;
+    background-color: #f5f5f5;
+    font-family: "Yanone Kaffeesatz", sans-serif;
     font-weight: 200;
     font-size: 17px;
-    background-image: url("../img/background.jpg");
 }
 
 #map-holder {
     width: 80vw;
     height: 80vh;
-    margin-left: 200px;
-    margin-top: 80px
-}
-
-.sidepanel-heading {
-    background-color: #63233d;
-    position: relative;
-}
-
-.sidepanel-text {
-    color: white;
-    font-size: 17px;
-    padding: 5px;
-    text-align: center;
-    padding-top: 35px
+    margin-left: 5%;
+    margin-top: 5%;
 }
 
 svg rect {
@@ -32,16 +18,16 @@ svg rect {
 }
 
 .country {
-    fill: #000000;
+    fill: #0f73bb79;
     /* country colour */
-    stroke: rgb(99, 95, 35);
+    stroke: rgb(15, 114, 187);
     /* country border colour */
     stroke-width: 1;
     /* country border width */
 }
 
 .country-on {
-    fill: #4B5358;
+    fill: #0f73bb79;
     /* highlight colour for selected country */
 }
 
@@ -51,12 +37,13 @@ svg rect {
 }
 
 .countryName {
-    fill: #FFFAFF;
+    fill: #000000;
     /* country label text colour */
+    stroke-width: 2;
 }
 
 .countryLabelBg {
-    fill: #2A2C39;
+    fill: #2a2c39;
     /* country label background colour */
 }
 
@@ -68,266 +55,5 @@ div.tooltip {
     font: 12px sans-serif;
     background: rgba(26, 16, 22, 0.9);
     border: 0px;
-    pointer-events: none;
-}
-
-.sidepanel {
-    font-family: Verdana, Geneva, Tahoma, sans-serif, sans-serif;
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    right: 0;
-    background-color: #1b0d13;
-    opacity: 0.9;
-    overflow-x: hidden;
-    transition: 0.5s;
-}
-
-.sidepanel a {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #FFFfFF;
-    display: block;
-    transition: 0.3s;
-}
-
-.sidepanel a:hover {
-    color: #999898;
-}
-
-.sidepanel .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 25px;
-    margin-left: 50px;
-}
-
-.sidepanel-heading-country {
-    text-align: center;
-    font-size: 14px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    color: white;
-    width: 50%;
-    background-color: #63233d;
-}
-
-.float-left {
-    float: left;
-}
-
-.float-right {
-    float: right;
-}
-
-
-/* Table Layout */
-
-table.detail-table {
-    margin: 20px 0 0 0;
-    border-collapse: collapse;
-    border-spacing: 0;
-    background: #212121;
-    color: #fff;
-}
-
-table.detail-table th,
-table.detail-table td {
-    text-align: center;
-}
-
-table.detail-table thead {
-    font-weight: 100;
-    line-height: 25px;
-    background: #642740;
-    text-transform: uppercase;
-}
-
-table.detail-table thead th {
-    color: #fff;
-    padding: 10px;
-    letter-spacing: 1px;
-    vertical-align: bottom;
-}
-
-table.detail-table thead th:nth-child(1) {
-    width: 20%;
-    text-align: left;
-    padding-left: 20px;
-}
-
-table.detail-table thead th:nth-child(2) {
-    width: 30%;
-}
-
-table.detail-table thead th:nth-child(3) {
-    width: 35%;
-}
-
-table.detail-table thead th:nth-child(4) {
-    width: 15%;
-}
-
-table.detail-table thead {
-    font-size: 14px;
-}
-
-table.detail-table tbody {
-    font-size: 14px;
-    line-height: 15px;
-}
-
-table.detail-table tbody tr {
-    border-top: 2px solid rgb(30, 14, 21);
-    transition: background 0.6s, color 0.6s;
-}
-
-table.detail-table tbody tr:hover {
-    color: #000;
-    background: rgba(255, 255, 255, 0.7);
-}
-
-table.detail-table tbody td {
-    padding: 12px;
-}
-
-table.detail-table tbody tr:hover td:first-child {
-    background: rgba(0, 0, 0, 0);
-}
-
-table.detail-table tbody td:first-child {
-    text-align: left;
-    padding-left: 20px;
-    transition: backgrounf 0.6s;
-}
-
-table.detail-table tfoot {
-    font-size: 12px;
-}
-
-table.detail-table tfoot tr {
-    border-top: 2px solid #1b0c12;
-}
-
-table.detail-table tfoot td {
-    color: rgba(255, 255, 215, 0.6);
-    text-align: left;
-    line-height: 15px;
-    padding: 0px 20px;
-}
-
-input.date-picker {
-    position: absolute;
-    top: 20px;
-    right: 50px;
-    width: 250px;
-    text-align: center;
-    border-radius: 3px;
-    height: 26px;
-    background-color: #fbf1f666;
-    border-color: transparent;
-    border-width: 2px;
-    color: #c6c4c4;
-    cursor: pointer;
-    font-size: 13px;
-}
-
-.daterangepicker {
-    background-color: #1b0d13ba !important;
-    border-color: #1b0d13ba !important;
-}
-
-.daterangepicker .drp-calendar.left .calendar-table,
-.daterangepicker .drp-calendar.right .calendar-table {
-    background-color: #1b0d13ba;
-    color: white;
-    border-color: #1b0d13ba !important;
-}
-
-.daterangepicker .off {
-    background-color: #1b0d13ba !important;
-}
-
-.daterangepicker .off:hover {
-    background-color: #1b0d132f !important;
-}
-
-.daterangepicker.show-calendar .drp-buttons {
-    background-color: #1b0d13ba !important;
-    color: white !important;
-}
-
-.daterangepicker::before {
-    border-bottom: 7px solid #1e0f15 !important;
-}
-
-.daterangepicker::after {
-    border-bottom: 6px solid #180b11 !important;
-}
-
-.daterangepicker select.hourselect,
-.daterangepicker select.minuteselect,
-.daterangepicker select.secondselect,
-.daterangepicker select.ampmselect {
-    background-color: #180b11 !important;
-    border-color: #180b11 !important;
-    color: #fff !important;
-}
-
-.daterangepicker th.prev,
-.daterangepicker th.next {
-    background-color: #63636370 !important
-}
-
-.cancelButtonClass,
-.applyButtonClass {
-    background-color: #fbf1f666;
-    border-color: transparent;
-    border-radius: 3px;
-    font-weight: 400 !important;
-    color: white;
-}
-
-.cancelButtonClass:hover,
-.applyButtonClass:hover {
-    background-color: #965d79 !important;
-    cursor: pointer;
-}
-
-.daterangepicker td.active,
-.daterangepicker td.active:hover {
-    background-color: #965d79 !important;
-}
-
-.daterangepicker td.available:hover {
-    color: black !important;
-}
-
-.daterangepicker td.available.off:hover {
-    color: white !important;
-}
-
-.off.ends.active.start-date.available {
-    background-color: #1b0d132f !important;
-}
-
-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    /* remove default arrow */
-    background-image: url(../down.png) !important;
-    /* add custom arrow */
-    background-repeat: no-repeat !important;
-    background-size: 10px 10px !important;
-    background-position: 35px 6px !important;
-}
-
-.loading * {
-    /*this will disable all events caputred by javascript*/
     pointer-events: none;
 }
