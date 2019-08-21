@@ -31,6 +31,10 @@ const d3MapConn = (function exportFunction() {
         connections.createConnections(data);
     };
 
+    EXPORTOBJECT.removeConnections = function removeConnections() {
+        connections.removeConnections();
+    };
+
     // Expose the public EXPORTOBJECT
     return EXPORTOBJECT;
 })();

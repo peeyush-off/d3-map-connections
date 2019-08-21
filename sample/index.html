@@ -14,21 +14,6 @@
         $.getJSON("data/geo.json", function (json) {
             d3MapConn.setOptions({
                 geoJson: json,
-                // showPulsatingDestinationCircles: true,
-                // parentId: '#map-holder',
-                // sourceImage: 'source-pin.png',
-                // sourceImageHeight: 20,
-                // sourceImageWidth: 20,
-                // sourceTooltipdata: 'ip',
-                // destinationImage: 'pointer.png',
-                // destinationImageWidth: 15,
-                // destinationImageHeight: 15,
-                // destinationTooltipdata: 'ip',
-                // showCountriesOnHover: true,
-                addAnimationToPath: false,
-                // animationDuration: 5000,
-                // pulsatingDestinationCirclesColor: '#fd0017',
-                // pathColor: '#fb5757',
             });
             d3MapConn.createMap().then((result) => {
                 $.getJSON("data/data.json", function (json) {
@@ -38,9 +23,10 @@
                         d3MapConn.createConnections([json[count]]);
                         count++;
                         if (count == json.length) {
-                            clearInterval(interval);
+                            d3MapConn.removeConnections();
+                            count = 0;
                         }
-                    }, 100);
+                    }, 1000);
                 });
             });
         });

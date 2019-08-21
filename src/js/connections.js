@@ -9,39 +9,55 @@ let destination;
 let source;
 let sourceMatchMap;
 let destinationMatchMap;
-const alreadyHighlighted = {};
-let iterationCount = 0;
+let alreadyHighlighted;
+let iterationCount;
+
+function removeConnections() {
+    // Remove all existing elments on the map
+    arcGroup.remove();
+    imageGroupSource.remove();
+    imageGroupDestination.remove();
+    highlightCircle.remove();
+    arcGroup = null;
+    imageGroupSource = null;
+    imageGroupDestination = null;
+    highlightCircle = null;
+}
+
 /**
  * This function will be used to draw elemets like
  * path, pointers and pulsating circles on map.
  * @param {array} data The data that will used to create elements.
  */
 function createConnections(data) {
-    iterationCount++;
+    
     const {
         div,
         projection,
         countriesGroup,
     } = optionStore.internalStore;
 
-    // if (!arcGroup) {
-    arcGroup = countriesGroup.append('g');
-    imageGroupDestination = countriesGroup.append('g');
-    highlightCircle = countriesGroup.append('g');
-    imageGroupSource = countriesGroup.append('g');
+    if (!arcGroup) {
+        arcGroup = countriesGroup.append('g');
+        imageGroupDestination = countriesGroup.append('g');
+        highlightCircle = countriesGroup.append('g');
+        imageGroupSource = countriesGroup.append('g');
 
-    // Array that will be used  to draw destination pointer
-    destination = [];
+        // Array that will be used  to draw destination pointer
+        destination = [];
 
-    // Array that will be used  to draw source pointer
-    source = [];
+        // Array that will be used  to draw source pointer
+        source = [];
 
-    // Map to check if a source already exists
-    sourceMatchMap = new Map();
+        // Map to check if a source already exists
+        sourceMatchMap = new Map();
 
-    // Map to check if a destination already exists
-    destinationMatchMap = new Map();
-    // }
+        // Map to check if a destination already exists
+        destinationMatchMap = new Map();
+
+        alreadyHighlighted = {};
+        iterationCount = 0;
+    }
 
     data.map((val) => {
         // Update source and destination array according to data
@@ -82,8 +98,8 @@ function createConnections(data) {
                 }</div>
             `,
             )
-                .style('left', `${d3.event.pageX}px`)
-                .style('top', `${d3.event.pageY - 28}px`);
+                .style('left', `${d3.event.pageX + optionStore.options.sourceImageXPos}px`)
+                .style('top', `${d3.event.pageY + optionStore.options.sourceImageYPos}px`);
         })
         .on('mouseout', function () {
             d3.select(this).style('cursor', 'default');
@@ -117,8 +133,8 @@ function createConnections(data) {
                 }</div>
             `,
             )
-                .style('left', `${d3.event.pageX}px`)
-                .style('top', `${d3.event.pageY - 28}px`);
+                .style('left', `${d3.event.pageX + optionStore.options.destinationImageXPos}px`)
+                .style('top', `${d3.event.pageY + optionStore.options.destinationImageYPos}px`);
         })
         .on('mouseout', function () {
             d3.select(this).style('cursor', 'default');
@@ -183,19 +199,22 @@ function createConnections(data) {
 
     if (optionStore.options.addAnimationToPath) {
         // Add animation to all paths drawn on map
+
         d3.selectAll('.line').each((d, i) => {
-            const totalLength = d3
-                .select(`#line${iterationCount}-${i}`)
-                .node()
-                .getTotalLength();
-            d3.selectAll(`#line${iterationCount}-${i}`)
-                .attr('stroke-dasharray', `${totalLength} ${totalLength}`)
-                .attr('stroke-dashoffset', totalLength)
-                .transition()
-                .duration(optionStore.options.addAnimationToPath ? optionStore.options.animationDuration : 0)
-                .delay(100 * i)
-                .attr('stroke-dashoffset', 0)
-                .style('stroke-width', 3);
+            if (d3.select(`#line${iterationCount}-${i}`).node()) {
+                const totalLength = d3
+                    .select(`#line${iterationCount}-${i}`)
+                    .node()
+                    .getTotalLength();
+                d3.selectAll(`#line${iterationCount}-${i}`)
+                    .attr('stroke-dasharray', `${totalLength} ${totalLength}`)
+                    .attr('stroke-dashoffset', totalLength)
+                    .transition()
+                    .duration(optionStore.options.addAnimationToPath ? optionStore.options.animationDuration : 0)
+                    .delay(100 * i)
+                    .attr('stroke-dashoffset', 0)
+                    .style('stroke-width', 3);
+            }
         });
     }
 
@@ -356,4 +375,5 @@ function createConnections(data) {
 
 export default {
     createConnections,
+    removeConnections,
 };
