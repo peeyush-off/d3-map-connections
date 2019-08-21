@@ -129,7 +129,7 @@ function createConnections(data) {
         .style('visibility', 'hidden')
         .transition()
         .style('visibility', 'visible')
-        .delay(5000);
+        .delay(optionStore.options.addAnimationToPath ? optionStore.options.animationDuration : 0);
 
     // line that will be used as a prototype for all paths
     const line = d3
@@ -192,7 +192,7 @@ function createConnections(data) {
                 .attr('stroke-dasharray', `${totalLength} ${totalLength}`)
                 .attr('stroke-dashoffset', totalLength)
                 .transition()
-                .duration(optionStore.options.animationDuration)
+                .duration(optionStore.options.addAnimationToPath ? optionStore.options.animationDuration : 0)
                 .delay(100 * i)
                 .attr('stroke-dashoffset', 0)
                 .style('stroke-width', 3);
@@ -268,7 +268,7 @@ function createConnections(data) {
             .attr('fill-opacity', 0)
             .transition()
             .attr('fill-opacity', 0.5)
-            .delay(optionStore.options.animationDuration);
+            .delay(optionStore.options.addAnimationToPath ? optionStore.options.animationDuration : 0);
 
         setTimeout(() => {
             circles.each(pulsate);
