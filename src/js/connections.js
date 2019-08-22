@@ -58,7 +58,8 @@ function createConnections(data) {
         alreadyHighlighted = {};
         iterationCount = 0;
     }
-
+    iterationCount++;
+    
     data.map((val) => {
         // Update source and destination array according to data
         if (!sourceMatchMap.has(val.source.lat + val.source.lon)) {
