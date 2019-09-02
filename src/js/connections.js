@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus */
-import optionStore from './options';
+import optionMap from './options';
 
 let arcGroup;
 let imageGroupDestination;
@@ -30,12 +30,11 @@ function removeConnections() {
  * @param {array} data The data that will used to create elements.
  */
 function createConnections(data) {
-    
     const {
         div,
         projection,
         countriesGroup,
-    } = optionStore.internalStore;
+    } = optionMap.internalStore;
 
     if (!arcGroup) {
         arcGroup = countriesGroup.append('g');
@@ -59,7 +58,7 @@ function createConnections(data) {
         iterationCount = 0;
     }
     iterationCount++;
-    
+
     data.map((val) => {
         // Update source and destination array according to data
         if (!sourceMatchMap.has(val.source.lat + val.source.lon)) {
@@ -86,27 +85,37 @@ function createConnections(data) {
         .enter()
         .append('image')
         .attr('class', 'pointer')
-        .attr('xlink:href', optionStore.options.sourceImage)
-        .attr('width', optionStore.options.sourceImageWidth)
-        .attr('height', optionStore.options.sourceImageHeight)
+        .attr('xlink:href', optionMap.options.sourceImage)
+        .attr('width', optionMap.options.sourceImageWidth)
+        .attr('height', optionMap.options.sourceImageHeight)
         .on('mouseover', function (d, i) {
-            d3.select(this).style('cursor', 'pointer');
+            if (optionMap.options.allowIconClick) {
+                d3.select(this).style('cursor', 'pointer');
+            }
             div.transition().style('opacity', 0.9);
             div.html(
                 `
             <div style = "background-color: black;color: white; padding: 10px;">${
-                d[optionStore.options.sourceTooltipdata]
+                d[optionMap.options.sourceTooltipdata]
                 }</div>
             `,
             )
-                .style('left', `${d3.event.pageX + optionStore.options.sourceImageXPos}px`)
-                .style('top', `${d3.event.pageY + optionStore.options.sourceImageYPos}px`);
+                .style('left', `${d3.event.pageX + optionMap.options.sourceImageXPos}px`)
+                .style('top', `${d3.event.pageY + optionMap.options.sourceImageYPos}px`);
         })
         .on('mouseout', function () {
-            d3.select(this).style('cursor', 'default');
+            if (optionMap.options.allowIconClick) {
+                d3.select(this).style('cursor', 'default');
+            }
             div.transition()
                 .duration(500)
                 .style('opacity', 0);
+        })
+        .on('click', (d) => {
+            if (optionMap.options.allowIconClick) {
+                const evt = new CustomEvent('sourceIconClick', { detail: d });
+                window.dispatchEvent(evt);
+            }
         })
         .attr('x', d => projection([d.lon, d.lat])[0] - 10)
         .attr('y', d => projection([d.lon, d.lat])[1] - 18);
@@ -119,34 +128,44 @@ function createConnections(data) {
         .enter()
         .append('image')
         .attr('class', 'pointer')
-        .attr('xlink:href', optionStore.options.destinationImage)
-        .attr('width', optionStore.options.destinationImageWidth)
-        .attr('height', optionStore.options.destinationImageHeight)
+        .attr('xlink:href', optionMap.options.destinationImage)
+        .attr('width', optionMap.options.destinationImageWidth)
+        .attr('height', optionMap.options.destinationImageHeight)
         .attr('x', d => projection([d.lon, d.lat])[0] - 7)
         .attr('y', d => projection([d.lon, d.lat])[1] - 15)
         .on('mouseover', function (d) {
-            d3.select(this).style('cursor', 'pointer');
+            if (optionMap.options.allowIconClick) {
+                d3.select(this).style('cursor', 'pointer');
+            }
             div.transition().style('opacity', 0.9);
             div.html(
                 `
             <div style = "background-color: black; color: white; padding: 10px;">${
-                d[optionStore.options.destinationTooltipdata]
+                d[optionMap.options.destinationTooltipdata]
                 }</div>
             `,
             )
-                .style('left', `${d3.event.pageX + optionStore.options.destinationImageXPos}px`)
-                .style('top', `${d3.event.pageY + optionStore.options.destinationImageYPos}px`);
+                .style('left', `${d3.event.pageX + optionMap.options.destinationImageXPos}px`)
+                .style('top', `${d3.event.pageY + optionMap.options.destinationImageYPos}px`);
         })
         .on('mouseout', function () {
-            d3.select(this).style('cursor', 'default');
+            if (optionMap.options.allowIconClick) {
+                d3.select(this).style('cursor', 'default');
+            }
             div.transition()
                 .duration(500)
                 .style('opacity', 0);
         })
+        .on('click', (d) => {
+            if (optionMap.options.allowIconClick) {
+                const evt = new CustomEvent('destinationIconClick', { detail: d });
+                window.dispatchEvent(evt);
+            }
+        })
         .style('visibility', 'hidden')
         .transition()
         .style('visibility', 'visible')
-        .delay(optionStore.options.addAnimationToPath ? optionStore.options.animationDuration : 0);
+        .delay(optionMap.options.addAnimationToPath ? optionMap.options.animationDuration : 0);
 
     // line that will be used as a prototype for all paths
     const line = d3
@@ -166,15 +185,21 @@ function createConnections(data) {
         .datum(d => [d.source, d.destination])
         .attr('d', line)
         .style('fill', 'none')
-        .style('stroke', optionStore.options.pathColor)
+        .style('stroke', optionMap.options.pathColor)
         .style('stroke-width', (d) => {
             if (d[0].count < 10) return 1.5;
             if (d[0].count < 50) return 2;
             return 2.5;
         })
         .attr('pointer-events', 'visibleStroke')
+        .on('click', (d) => {
+            if (optionMap.options.allowEdgeClick) {
+                const evt = new CustomEvent('pathClick', { detail: d });
+                window.dispatchEvent(evt);
+            }
+        })
         .on('mouseover', (d, i) => {
-            if (optionStore.options.showCountriesOnHover) {
+            if (optionMap.options.showCountriesOnHover) {
                 d3.select(`#countryLabel${data[i].source.iso_a3}`).style(
                     'display',
                     'block',
@@ -186,7 +211,7 @@ function createConnections(data) {
             }
         })
         .on('mouseout', (d, i) => {
-            if (optionStore.options.showCountriesOnHover) {
+            if (optionMap.options.showCountriesOnHover) {
                 d3.select(`#countryLabel${data[i].source.iso_a3}`).style(
                     'display',
                     'none',
@@ -198,7 +223,7 @@ function createConnections(data) {
             }
         });
 
-    if (optionStore.options.addAnimationToPath) {
+    if (optionMap.options.addAnimationToPath) {
         // Add animation to all paths drawn on map
 
         d3.selectAll('.line').each((d, i) => {
@@ -211,7 +236,7 @@ function createConnections(data) {
                     .attr('stroke-dasharray', `${totalLength} ${totalLength}`)
                     .attr('stroke-dashoffset', totalLength)
                     .transition()
-                    .duration(optionStore.options.addAnimationToPath ? optionStore.options.animationDuration : 0)
+                    .duration(optionMap.options.addAnimationToPath ? optionMap.options.animationDuration : 0)
                     .delay(100 * i)
                     .attr('stroke-dashoffset', 0)
                     .style('stroke-width', 3);
@@ -219,7 +244,7 @@ function createConnections(data) {
         });
     }
 
-    if (optionStore.options.showPulsatingDestinationCircles) {
+    if (optionMap.options.showPulsatingDestinationCircles) {
         // Destination pulstaing circles
         const circles = highlightCircle
             .selectAll('highlightCircles')
@@ -264,15 +289,17 @@ function createConnections(data) {
                 }
                 return 10;
             })
-            .attr('fill', optionStore.options.pulsatingDestinationCirclesColor)
+            .attr('fill', optionMap.options.pulsatingDestinationCirclesColor)
             .attr('fill-opacity', 0.5)
             .on('mouseover', function (d, i) {
-                d3.select(this).style('cursor', 'pointer');
+                if (optionMap.options.allowCircleClick) {
+                    d3.select(this).style('cursor', 'pointer');
+                }
                 div.transition().style('opacity', 0.9);
                 div.html(
                     `
             <div style = "background-color: black; color: white; padding: 10px;">${
-                    d.destination[optionStore.options.destinationTooltipdata]
+                    d.destination[optionMap.options.destinationTooltipdata]
                     }</div>
             `,
                 )
@@ -280,15 +307,23 @@ function createConnections(data) {
                     .style('top', `${d3.event.pageY - 28}px`);
             })
             .on('mouseout', function (d, i) {
-                d3.select(this).style('cursor', 'default');
+                if (optionMap.options.allowCircleClick) {
+                    d3.select(this).style('cursor', 'default');
+                }
                 div.transition()
                     .duration(500)
                     .style('opacity', 0);
             })
+            .on('click', (d) => {
+                if (optionMap.options.allowCircleClick) {
+                    const evt = new CustomEvent('circleClick', { detail: d });
+                    window.dispatchEvent(evt);
+                }
+            })
             .attr('fill-opacity', 0)
             .transition()
             .attr('fill-opacity', 0.5)
-            .delay(optionStore.options.addAnimationToPath ? optionStore.options.animationDuration : 0);
+            .delay(optionMap.options.addAnimationToPath ? optionMap.options.animationDuration : 0);
 
         setTimeout(() => {
             circles.each(pulsate);
@@ -339,7 +374,7 @@ function createConnections(data) {
  * This function defines the curve that will be used in creating the paths on the map.
  */
     function curve(context) {
-        let custom = d3.curveLinear(context);
+        const custom = d3.curveLinear(context);
         custom._context = context;
         custom.point = function (x, y) {
             (x = +x), (y = +y);
@@ -355,9 +390,9 @@ function createConnections(data) {
                 default:
                     let x1 = this.x0 * 0.5 + x * 0.5;
                     let y1 = this.y0 * 0.5 + y * 0.5;
-                    let m = 1 / (y1 - y) / (x1 - x);
-                    let r = -100; // offset of mid point.
-                    let k = r / Math.sqrt(1 + m * m);
+                    const m = 1 / (y1 - y) / (x1 - x);
+                    const r = -100; // offset of mid point.
+                    const k = r / Math.sqrt(1 + m * m);
                     if (m == Infinity) {
                         y1 += r;
                     } else {

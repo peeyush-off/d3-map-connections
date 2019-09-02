@@ -14,6 +14,9 @@
         $.getJSON("data/geo.json", function (json) {
             d3MapConn.setOptions({
                 geoJson: json,
+                allowEdgeClick: true,
+                allowCircleClick: true,
+                allowIconClick: true,
             });
             d3MapConn.createMap().then((result) => {
                 $.getJSON("data/data.json", function (json) {
@@ -29,6 +32,18 @@
                     }, 1000);
                 });
             });
+        });
+        window.addEventListener('sourceIconClick', function (e) {
+            console.log('sourceIconClick', e);
+        });
+        window.addEventListener('destinationIconClick', function (e) {
+            console.log('destinationIconClick', e);
+        });
+        window.addEventListener('pathClick', function (e) {
+            console.log('pathClick', e);
+        });
+        window.addEventListener('circleClick', function (e) {
+            console.log('circleClick', e);
         });
     </script>
 </head>
