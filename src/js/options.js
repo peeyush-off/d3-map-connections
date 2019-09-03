@@ -1,27 +1,36 @@
 const options = {
-    showPulsatingDestinationCircles: true,
+    extra: {
+        showPulsatingDestinationCircles: true,
+        showCountriesOnHover: true,
+        pulsatingDestinationCirclesColor: '#fd0017',
+        pathColor: '#fb5757',
+        addAnimationToPath: true,
+        animationDuration: 5000,
+    },
     parentId: '#map-holder',
     geoJson: null,
-    sourceImage: `${__dirname}dist/img/source-pin.png`,
-    sourceImageHeight: 20,
-    sourceImageWidth: 20,
-    sourceTooltipdata: 'ip',
-    destinationImage: `${__dirname}dist/img/pointer.png`,
-    destinationImageWidth: 15,
-    destinationImageHeight: 15,
-    destinationTooltipdata: 'ip',
-    showCountriesOnHover: true,
-    addAnimationToPath: true,
-    animationDuration: 5000,
-    pulsatingDestinationCirclesColor: '#fd0017',
-    pathColor: '#fb5757',
-    sourceImageYPos: -28,
-    sourceImageXPos: 0,
-    destinationImageXPos: 0,
-    destinationImageYPos: -28,
-    allowEdgeClick: false,
-    allowCircleClick: false,
-    allowIconClick: true,
+    source: {
+        imageXPos: 0,
+        imageYPos: -28,
+        imageWidth: 20,
+        imageHeight: 20,
+        location: `${__dirname}dist/img/source-pin.png`,
+        tooltipdata: 'ip',
+    },
+    destination: {
+        imageXPos: 0,
+        imageYPos: -28,
+        imageHeight: 15,
+        imageWidth: 15,
+        location: `${__dirname}dist/img/pointer.png`,
+        tooltipdata: 'ip',
+    },
+    event: {
+        edgeClick: false,
+        circleClick: false,
+        iconClick: true,
+    }
+    
 };
 
 const internalStore = {

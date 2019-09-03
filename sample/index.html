@@ -14,9 +14,10 @@
         $.getJSON("data/geo.json", function (json) {
             d3MapConn.setOptions({
                 geoJson: json,
-                allowEdgeClick: true,
-                allowCircleClick: true,
-                allowIconClick: true,
+                event: {
+                    edgeClick: false,
+                    iconClick: false,
+                },
             });
             d3MapConn.createMap().then((result) => {
                 $.getJSON("data/data.json", function (json) {

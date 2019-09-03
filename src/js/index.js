@@ -1,6 +1,6 @@
-import optionsMap from "./options";
-import map from "./map";
-import connections from "./connections";
+import optionsMap from './options';
+import map from './map';
+import connections from './connections';
 
 // import connections from './connections.js';
 // import feedData from './feedData.js';
@@ -13,14 +13,28 @@ const d3MapConn = (function exportFunction() {
         // eslint-disable-next-line no-restricted-syntax
         for (const [key, value] of Object.entries(optionsObject)) {
             if (key in optionsMap.options) {
-                optionsMap.options[key] = value;
+                if (typeof optionsMap.options[key] === 'object' && optionsMap.options[key] !== null) {
+                    // eslint-disable-next-line no-restricted-syntax
+                    for (const [innerKey, innerValue] of Object.entries(optionsObject[key])) {
+                        if (innerKey in optionsMap.options[key]) {
+                            optionsMap.options[key][innerKey] = innerValue;
+                        } else {
+                            throw new Error(
+                                `No configuration option named '${key}.${innerKey}' available`,
+                            );
+                        }
+                    }
+                } else {
+                    optionsMap.options[key] = value;
+                }
             } else {
                 throw new Error(
-                    `No configuration option named ${key} available`
+                    `No configuration option named '${key}' available`,
                 );
             }
         }
         // optionsMap.set(options);
+        console.log(optionsMap.options);
     };
 
     EXPORTOBJECT.createMap = function createMap() {
